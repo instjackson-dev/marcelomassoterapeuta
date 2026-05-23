@@ -145,6 +145,7 @@ function Nav({ onBook }) {
           <a href="#sobre">Sobre</a>
           <a href="#servicos">Serviços</a>
           <a href="#processo">Processo</a>
+          <a href="#depoimentos">Depoimentos</a>
           <a href="#faq">Dúvidas</a>
           <a href="#contato">Contato</a>
         </div>
@@ -256,7 +257,7 @@ function About() {
 
             <div className="about-aside">
               <strong>NOTA IMPORTANTE</strong>
-              O atendimento massoterápico não substitui consulta médica, diagnóstico ou tratamento. Em casos de dor intensa, trauma, gestação, marca-passo, doença cardíaca, trombose, câncer, feridas ou pós-operatório recente, procure orientação médica antes do atendimento.
+              - O atendimento massoterápico não substitui consulta médica, diagnóstico ou tratamento. Em casos de dor intensa, trauma, gestação, marca-passo, doença cardíaca, trombose, câncer, feridas ou pós-operatório recente, procure orientação médica antes do atendimento.
             </div>
           </div>
         </div>
@@ -362,6 +363,200 @@ function ServiceModal({ svc, onClose, onBook }) {
       </div>
     </div>);
 
+}
+
+/* ============================================================
+   TESTIMONIALS — Instagram carousel
+   ============================================================ */
+const TESTIMONIALS = [
+  {
+    id: "cyborg",
+    name: "Cris Cyborg",
+    role: "Atleta MMA · UFC",
+    badge: "Campeã mundial",
+    sport: "MMA",
+    url: "https://www.instagram.com/p/BLXaQ7LFh_n/",
+    quote: "Recuperação e cuidado entre os treinos com o Marcelo.",
+  },
+  {
+    id: "mamute",
+    name: "Mamute Five",
+    role: "Atleta MMA · Jungle Fight",
+    badge: "Profissional",
+    sport: "MMA",
+    url: "https://www.instagram.com/reel/CUQn-RIA42x/",
+    quote: "Preparação corporal para a luta — técnica e atenção real.",
+  },
+  {
+    id: "melquias",
+    name: "Melquias",
+    role: "Paracanoagem · Medalhista",
+    badge: "Medalhista",
+    sport: "Paracanoagem",
+    url: "https://www.instagram.com/reel/C_qG1tPOEOx/",
+    quote: "Trabalho corporal que sustenta o desempenho dentro d'água.",
+  },
+  {
+    id: "carlosleal",
+    name: "Carlos Leal",
+    role: "Muay Thai · Campeão PFL",
+    badge: "Campeão PFL",
+    sport: "Muay Thai",
+    url: "https://www.instagram.com/s/aGlnaGxpZ2h0OjE3ODgzNjY5MzkyNjIwODYz?story_media_id=2652815797064078198_3008271477",
+    quote: "Preparação e recuperação que sustentam a temporada de luta.",
+  },
+];
+
+function useInstagramEmbeds(deps) {
+  useEffect(() => {
+    const load = () => {
+      if (window.instgrm && window.instgrm.Embeds) {
+        window.instgrm.Embeds.process();
+      }
+    };
+    if (!document.getElementById("ig-embed-script")) {
+      const s = document.createElement("script");
+      s.id = "ig-embed-script";
+      s.async = true;
+      s.src = "https://www.instagram.com/embed.js";
+      s.onload = load;
+      document.body.appendChild(s);
+    } else {
+      load();
+    }
+  }, deps || []);
+}
+
+function Testimonials() {
+  const [active, setActive] = useState(0);
+  const trackRef = useRef(null);
+  useInstagramEmbeds([]);
+
+  const scrollTo = (i) => {
+    const n = Math.max(0, Math.min(TESTIMONIALS.length - 1, i));
+    setActive(n);
+    const track = trackRef.current;
+    if (track) {
+      const card = track.children[n];
+      if (card) {
+        track.scrollTo({ left: card.offsetLeft - 32, behavior: "smooth" });
+      }
+    }
+  };
+
+  useEffect(() => {
+    const track = trackRef.current;
+    if (!track) return;
+    const onScroll = () => {
+      const cards = [...track.children];
+      const center = track.scrollLeft + track.clientWidth / 2;
+      let nearest = 0, best = Infinity;
+      cards.forEach((c, i) => {
+        const mid = c.offsetLeft + c.offsetWidth / 2;
+        const d = Math.abs(mid - center);
+        if (d < best) { best = d; nearest = i; }
+      });
+      setActive(nearest);
+    };
+    track.addEventListener("scroll", onScroll, { passive: true });
+    return () => track.removeEventListener("scroll", onScroll);
+  }, []);
+
+  return (
+    <section className="testi" id="depoimentos" data-screen-label="Depoimentos">
+      <div className="testi-glow" aria-hidden="true"></div>
+      <div className="wrap">
+        <div className="testi-head">
+          <div>
+            <span className="eyebrow eyebrow-neon">Quem confia</span>
+            <h2 className="h-display">Vozes de quem<br/>treina <em>no limite</em>.</h2>
+          </div>
+          <p>
+            Atletas de alto rendimento — UFC, Jungle Fight, paracanoagem — passam pelas mãos do Marcelo entre temporadas, lutas e provas. Os depoimentos abaixo vêm direto do Instagram oficial deles.
+          </p>
+        </div>
+
+        <div className="testi-stage">
+          <div className="testi-track" ref={trackRef}>
+            {TESTIMONIALS.map((t, i) => (
+              <article key={t.id} className="testi-card" data-active={i === active}>
+                <header className="testi-card-head">
+                  <div className="testi-avatar" aria-hidden="true">
+                    <span>{t.name.split(" ").map(w => w[0]).join("").slice(0,2)}</span>
+                  </div>
+                  <div className="testi-id">
+                    <div className="testi-name">{t.name}</div>
+                    <div className="testi-role">{t.role}</div>
+                  </div>
+                  <span className="testi-badge">{t.badge}</span>
+                </header>
+
+                <div className="testi-quote">
+                  <span className="quote-mark">"</span>
+                  {t.quote}
+                </div>
+
+                <div className="testi-embed">
+                  <blockquote
+                    className="instagram-media"
+                    data-instgrm-permalink={t.url}
+                    data-instgrm-version="14"
+                    style={{ background: "#0a0a0c", border: 0, margin: 0, padding: 0, minWidth: "100%", width: "100%" }}
+                  >
+                    <a href={t.url} target="_blank" rel="noopener noreferrer" className="testi-fallback">
+                      <div className="testi-fallback-icon">▶</div>
+                      <div className="testi-fallback-text">
+                        Ver depoimento de<br/><strong>{t.name}</strong><br/>no Instagram
+                      </div>
+                    </a>
+                  </blockquote>
+                </div>
+
+                <footer className="testi-card-foot">
+                  <a href={t.url} target="_blank" rel="noopener noreferrer" className="testi-ig">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                      <rect x="3" y="3" width="18" height="18" rx="5"/>
+                      <circle cx="12" cy="12" r="4"/>
+                      <circle cx="17.5" cy="6.5" r="0.5" fill="currentColor"/>
+                    </svg>
+                    Ver no Instagram
+                  </a>
+                  <span className="testi-sport">{t.sport}</span>
+                </footer>
+              </article>
+            ))}
+          </div>
+
+          <div className="testi-controls">
+            <button
+              className="testi-arrow"
+              onClick={() => scrollTo(active - 1)}
+              disabled={active === 0}
+              aria-label="Anterior"
+            >←</button>
+            <div className="testi-dots">
+              {TESTIMONIALS.map((t, i) => (
+                <button
+                  key={t.id}
+                  className={`testi-dot ${i === active ? "active" : ""}`}
+                  onClick={() => scrollTo(i)}
+                  aria-label={`Ir para ${t.name}`}
+                >
+                  <span className="testi-dot-label">{t.name.split(" ")[0]}</span>
+                </button>
+              ))}
+            </div>
+            <button
+              className="testi-arrow"
+              onClick={() => scrollTo(active + 1)}
+              disabled={active === TESTIMONIALS.length - 1}
+              aria-label="Próximo"
+            >→</button>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
 }
 
 /* ============================================================
@@ -474,7 +669,7 @@ function Booking({ initialSvc, clearInitial }) {
               </div>
               <div className="contact-row">
                 <dt>Local</dt>
-                <dd>São Paulo · confirmado no contato</dd>
+                <dd>Curitiba · confirmado no contato</dd>
               </div>
               <div className="contact-row">
                 <dt>Pagamento</dt>
@@ -585,7 +780,7 @@ function Foot() {
         <div className="foot-grid">
           <div>
             <div className="foot-brand">Marcelo Alves <em>dos Santos</em></div>
-            <p>Massoterapeuta em São Paulo · técnicas corporais para alívio de dores, recuperação muscular e bem-estar físico e mental. Quinze anos de prática.</p>
+            <p>Massoterapeuta em Curitiba · técnicas corporais para alívio de dores, recuperação muscular e bem-estar físico e mental. Quinze anos de prática.</p>
           </div>
           <div className="foot-col">
             <h5>Navegação</h5>
@@ -642,6 +837,7 @@ function App() {
       <Hero onBook={() => scrollToBook()} />
       <About />
       <Services onOpen={setOpenSvc} onBook={scrollToBook} />
+      <Testimonials />
       <Process />
       <FAQ />
       <Booking initialSvc={bookingSvc} clearInitial={() => setBookingSvc("")} />

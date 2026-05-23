@@ -663,6 +663,316 @@ button { font: inherit; cursor: pointer; }
 }
 
 /* ============================================================
+   TESTIMONIALS — atletas / Instagram
+   ============================================================ */
+.testi {
+  background: var(--bone);
+  padding: 120px 0 100px;
+  position: relative;
+  overflow: hidden;
+}
+.testi-glow {
+  position: absolute;
+  top: -10%; right: -5%;
+  width: 50%; height: 60%;
+  background: radial-gradient(circle, rgba(182,92,255,0.08), transparent 65%);
+  pointer-events: none;
+}
+.testi-head {
+  display: grid;
+  grid-template-columns: 1.05fr 0.95fr;
+  gap: 64px;
+  margin-bottom: 60px;
+  align-items: end;
+}
+.testi-head h2 {
+  font-size: clamp(42px, 5vw, 64px);
+  margin: 20px 0 0;
+}
+.testi-head h2 em { color: var(--neon); font-style: italic; }
+.testi-head p {
+  font-size: 15px;
+  line-height: 1.7;
+  color: var(--txt-mid);
+  max-width: 440px;
+  margin: 0;
+}
+
+.testi-stage { position: relative; }
+
+.testi-track {
+  display: flex;
+  gap: 24px;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scroll-padding: 32px;
+  padding: 8px 0 32px;
+  margin: 0 -32px;
+  padding-left: 32px;
+  padding-right: 32px;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+}
+.testi-track::-webkit-scrollbar { display: none; }
+
+.testi-card {
+  flex: 0 0 380px;
+  scroll-snap-align: start;
+  background: var(--ink);
+  color: #fff;
+  border: 1px solid var(--line-dark);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  transition: transform .4s ease, box-shadow .4s ease, border-color .3s ease;
+  position: relative;
+}
+.testi-card[data-active="true"] {
+  transform: translateY(-6px);
+  border-color: rgba(200, 164, 90, 0.4);
+  box-shadow:
+    0 30px 60px -30px rgba(0,0,0,0.4),
+    0 0 0 1px rgba(200, 164, 90, 0.2),
+    0 0 40px -10px rgba(182, 92, 255, 0.25);
+}
+.testi-card::before {
+  content: "";
+  position: absolute;
+  top: 0; left: 0; width: 56px; height: 2px;
+  background: var(--neon);
+  box-shadow: 0 0 12px var(--neon);
+  opacity: 0;
+  transition: opacity .3s;
+}
+.testi-card[data-active="true"]::before { opacity: 1; }
+
+.testi-card-head {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  gap: 14px;
+  align-items: center;
+  padding: 22px 22px 18px;
+  border-bottom: 1px solid var(--line-dark);
+}
+.testi-avatar {
+  width: 44px; height: 44px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--gold-deep), var(--gold));
+  display: grid; place-items: center;
+  font-family: var(--serif);
+  font-weight: 500;
+  font-size: 16px;
+  color: var(--ink);
+  letter-spacing: -0.02em;
+}
+.testi-id { line-height: 1.25; min-width: 0; }
+.testi-name {
+  font-family: var(--serif);
+  font-size: 18px;
+  font-weight: 400;
+  letter-spacing: -0.01em;
+  color: #fff;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.testi-role {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.55);
+  margin-top: 4px;
+}
+.testi-badge {
+  font-family: var(--mono);
+  font-size: 9px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--gold);
+  border: 1px solid rgba(200,164,90,0.4);
+  padding: 5px 9px;
+  border-radius: 999px;
+  white-space: nowrap;
+}
+
+.testi-quote {
+  padding: 18px 22px 8px;
+  font-family: var(--serif);
+  font-size: 17px;
+  font-style: italic;
+  font-weight: 300;
+  line-height: 1.4;
+  letter-spacing: -0.005em;
+  color: rgba(255,255,255,0.88);
+  position: relative;
+}
+.testi-quote .quote-mark {
+  font-family: var(--serif);
+  font-size: 56px;
+  line-height: 0.5;
+  color: var(--neon-hi);
+  margin-right: 4px;
+  font-style: normal;
+  vertical-align: -16px;
+  opacity: 0.8;
+}
+
+.testi-embed {
+  margin: 12px 14px 14px;
+  background: #0a0a0c;
+  border: 1px solid var(--line-dark);
+  min-height: 320px;
+  position: relative;
+  overflow: hidden;
+}
+.testi-embed .instagram-media {
+  min-width: 100% !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  margin: 0 !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+}
+/* fallback while IG script loads */
+.testi-fallback {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  height: 320px;
+  text-decoration: none;
+  color: rgba(255,255,255,0.85);
+  background:
+    radial-gradient(circle at 50% 40%, rgba(182,92,255,0.18), transparent 60%),
+    #0a0a0c;
+  transition: background .3s;
+}
+.testi-fallback:hover {
+  background:
+    radial-gradient(circle at 50% 40%, rgba(182,92,255,0.28), transparent 55%),
+    #0a0a0c;
+}
+.testi-fallback-icon {
+  width: 56px; height: 56px;
+  border-radius: 50%;
+  background: var(--neon);
+  display: grid; place-items: center;
+  color: #fff;
+  font-size: 20px;
+  padding-left: 4px;
+  box-shadow: 0 0 28px rgba(182,92,255,0.5);
+}
+.testi-fallback-text {
+  text-align: center;
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  line-height: 1.6;
+  color: rgba(255,255,255,0.65);
+}
+.testi-fallback-text strong {
+  display: block;
+  margin: 2px 0;
+  color: var(--gold);
+  font-family: var(--serif);
+  font-size: 20px;
+  font-weight: 400;
+  font-style: italic;
+  letter-spacing: -0.01em;
+  text-transform: none;
+}
+
+.testi-card-foot {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  padding: 16px 22px 20px;
+  border-top: 1px solid var(--line-dark);
+  margin-top: auto;
+}
+.testi-ig {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  color: var(--neon-hi);
+  transition: color .2s;
+}
+.testi-ig:hover { color: var(--gold); }
+.testi-sport {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.4);
+}
+
+/* Controls */
+.testi-controls {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 24px;
+  margin-top: 16px;
+}
+.testi-arrow {
+  width: 44px; height: 44px;
+  border-radius: 50%;
+  background: var(--ink);
+  border: 1px solid var(--line-dark);
+  color: #fff;
+  font-size: 18px;
+  display: grid; place-items: center;
+  transition: all .25s ease;
+}
+.testi-arrow:hover:not(:disabled) {
+  background: var(--neon);
+  border-color: var(--neon);
+  box-shadow: var(--neon-glow);
+  transform: translateY(-2px);
+}
+.testi-arrow:disabled { opacity: 0.3; cursor: not-allowed; }
+.testi-dots {
+  display: flex;
+  gap: 4px;
+  background: rgba(10,10,12,0.06);
+  border-radius: 999px;
+  padding: 4px;
+}
+.testi-dot {
+  background: transparent;
+  border: 0;
+  padding: 8px 16px;
+  border-radius: 999px;
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--txt-soft);
+  transition: all .25s ease;
+}
+.testi-dot:hover { color: var(--txt-dark); }
+.testi-dot.active {
+  background: var(--ink);
+  color: var(--gold);
+}
+
+@media (max-width: 980px) {
+  .testi-head { grid-template-columns: 1fr; gap: 20px; }
+  .testi-card { flex-basis: 86vw; max-width: 380px; }
+  .testi-dot-label { display: none; }
+  .testi-dot { width: 28px; height: 28px; padding: 0; }
+  .testi-dot.active { background: var(--neon); color: #fff; }
+}
+
+/* ============================================================
    PROCESS / DIFFERENCIAL
    ============================================================ */
 .process {
