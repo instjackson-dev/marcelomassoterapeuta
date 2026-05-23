@@ -396,15 +396,6 @@ const TESTIMONIALS = [
     url: "https://www.instagram.com/reel/C_qG1tPOEOx/",
     quote: "Trabalho corporal que sustenta o desempenho dentro d'água.",
   },
-  {
-    id: "carlosleal",
-    name: "Carlos Leal",
-    role: "Muay Thai · Campeão PFL",
-    badge: "Campeão PFL",
-    sport: "Muay Thai",
-    url: "https://www.instagram.com/s/aGlnaGxpZ2h0OjE3ODgzNjY5MzkyNjIwODYz?story_media_id=2652815797064078198_3008271477",
-    quote: "Preparação e recuperação que sustentam a temporada de luta.",
-  },
 ];
 
 function useInstagramEmbeds(deps) {
